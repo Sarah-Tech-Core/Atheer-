@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>أثير | القرآن الكريم</title>
+
+    <meta name="description" content="أثير - منصة قرآنية فاخرة لتلاوة وحفظ القرآن الكريم مع تفسير ميسر وأصوات 15 قارئاً. تجربة روحانية عصرية في بيئة هادئة." />
+    <meta property="og:title" content="أثير | القرآن الكريم" />
+    <meta property="og:description" content="أثير - منصة قرآنية متكاملة مع تفسير ميسر، أصوات قراء متعددة، وضع التسميع، والإشارات المرجعية. رفيقك الهادئ للحفظ والتدبر." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sarah-tech-core.github.io/Atheer/" />
+    <meta property="og:image" content="https://sarah-tech-core.github.io/Atheer/icon-512.png" />
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a2a4a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="أثير">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@400;600;700&family=Noto_Naskh_Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "أثير",
+        "alternateName": "Atheer",
+        "url": "https://sarah-tech-core.github.io/Atheer/",
+        "description": "أثير - منصة قرآنية متكاملة لتلاوة وحفظ القرآن الكريم مع تفسير ميسر وأصوات 15 قارئاً، وضع التسميع الذاتي، والإشارات المرجعية.",
+        "applicationCategory": "Education",
+        "operatingSystem": "All",
+        "browserRequirements": "HTML5, JavaScript, CSS",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "image": "https://sarah-tech-core.github.io/Atheer/icon-512.png",
+        "author": {
+            "@type": "Person",
+            "name": "فريق أثير"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "127",
+            "bestRating": "5"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <i class="fa-solid fa-book-quran splash-icon"></i>
+            <h1>أثير</h1>
+            <p class="splash-verse">"وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا"</p>
+            <div class="splash-loader"><div class="loader-bar"></div></div>
+            <p class="splash-loading-text">جاري تجهيز المصحف الشريف...</p>
+        </div>
+    </div>
+
+    <div id="resume-modal" class="resume-modal style-hidden">
+        <div class="resume-modal-content">
+            <i class="fa-solid fa-clock-rotate-left resume-icon"></i>
+            <h3>هل تريد الاستكمال من حيث توقفت؟</h3>
+            <p id="resume-info-text">كانت آخر مرة تتلو فيها سورة <span id="last-surah-name"></span> عند الدقيقة <span id="last-time-text"></span></p>
+            <div class="resume-buttons">
+                <button id="resume-yes-btn" class="resume-btn resume-yes">نعم، استكمل</button>
+                <button id="resume-no-btn" class="resume-btn resume-no">بدأ من جديد</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="privacy-modal" class="privacy-modal style-hidden">
+        <div class="privacy-content">
+            <div class="privacy-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 55px; height: 55px; color: #1a2a4a;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 22V2"/>
+                </svg>
+            </div>
+            <h3>خصوصيتك تهمنا</h3>
+            <p>نحن نستخدم <strong>Google Analytics</strong> بشكل مجهول تماماً لتحسين أداء الموقع وفهم كيفية استخدامه. لا يتم جمع أي بيانات شخصية.</p>
+            <div class="privacy-actions">
+                <button id="privacy-accept" class="privacy-btn accept"><i class="fa-regular fa-circle-check"></i> موافق</button>
+                <button id="privacy-reject" class="privacy-btn reject"><i class="fa-regular fa-circle-xmark"></i> رفض</button>
+            </div>
+        </div>
+    </div>
+    <div id="privacy-overlay" class="overlay privacy-overlay style-hidden"></div>
+
+    <div id="settings-modal" class="settings-modal style-hidden">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3><i class="fa-solid fa-sliders-h"></i> الإعدادات</h3>
+                <button id="close-settings-btn" class="btn-close-modal-circle" title="إغلاق الإعدادات">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <label class="setting-label"><i class="fa-solid fa-palette"></i> الثيم اللوني</label>
+                    <div class="theme-options">
+                        <button class="theme-option" data-theme="default" style="background: #2c5234; color: white;">الأخضر</button>
+                        <button class="theme-option" data-theme="pink" style="background: #b5838d; color: white;">الوردي</button>
+                        <button class="theme-option" data-theme="beige" style="background: #f5e6d3; color: #5a3e2b;">البيج</button>
+                        <button class="theme-option active" data-theme="navy" style="background: #1a2a4a; color: #f5e7c8;">الأزرق</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label"><i class="fa-solid fa-moon"></i> الوضع الليلي</label>
+                    <div class="toggle-switch-container">
+                        <input type="checkbox" id="settings-dark-mode-toggle" class="toggle-switch">
+                        <label for="settings-dark-mode-toggle" class="toggle-switch-label">فعّل الوضع الليلي</label>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label"><i class="fa-solid fa-user-shield"></i> الخصوصية والبيانات</label>
+                    
+                    <button id="clear-bookmarks-btn" class="settings-action-btn delete-action" style="border-color: rgba(219, 68, 85, 0.2); color: #db4455;">
+                        <i class="fa-solid fa-trash-can"></i> حذف جميع الإشارات المرجعية
+                    </button>
+                    
+                    <button id="clear-cache-btn" class="settings-action-btn cache-action" style="border-color: rgba(218, 165, 32, 0.2); color: #daa520;">
+                        <i class="fa-solid fa-clock-rotate-left"></i> مسح التخزين المؤقت (Cache)
+                    </button>
+
+                    <button id="reset-privacy-btn" class="settings-action-btn">
+                        <i class="fa-solid fa-arrow-rotate-right"></i> إعادة تعيين خيار الخصوصية
+                    </button>
+                    
+                    <p class="settings-note"><i class="fa-solid fa-lightbulb" style="color: #daa520; margin-left: 4px;"></i> بعد مسح التخزين المؤقت، سيتم إعادة تحميل التطبيق.</p>
+                </div>
+
+                <div class="setting-group footer-note">
+                    <p class="settings-credit"> أثير | رفيقك الهادئ لتلاوة وحفظ القرآن 🌿🌷</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="settings-overlay" class="overlay settings-overlay style-hidden"></div>
+
+    <header>
+        <div class="container header-container">
+            <h1><i class="fa-solid fa-book-quran"></i> أثير</h1>
+            <div class="header-actions">
+                <button id="settings-toggle-btn" class="btn-action-nav float-btn" title="الإعدادات">
+                    <i class="fa-solid fa-sliders-h"></i>
+                </button>
+                <button id="bookmark-sidebar-toggle" class="btn-action-nav float-btn" title="الآيات التي تحتاج تثبيت">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span id="bookmark-badge" class="badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="controls-section container">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-input" placeholder="ابحث عن اسم السورة أو رقمها...">
+        </div>
+        <div class="controls-interactive">
+            <button id="memorization-mode-btn" class="btn-memorize float-btn-rect">
+                <i class="fa-solid fa-eye-slash"></i>
+                <span>وضع التسميع الذاتي: معطّل</span>
+            </button>
+            <button id="auto-play-toggle-btn" class="btn-autoplay active float-btn-rect">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>التلاوة التلقائية: مفعّلة</span>
+            </button>
+            <div class="reciter-select">
+                <label for="reciter-dropdown">اختر القارئ:</label>
+                <select id="reciter-dropdown">
+                    <option value="https://server8.mp3quran.net/afs/">مشاري بن راشد العفاسي</option>
+                    <option value="https://server10.mp3quran.net/minsh/">محمد الصديق المنشاوي</option>
+                    <option value="https://server13.mp3quran.net/husr/">محمود خليل الحصري</option>
+                    <option value="https://server10.mp3quran.net/jleel/">خالد الجليل</option>
+                    <option value="https://server6.mp3quran.net/abkr/">إدريس أبكر</option>
+                    <option value="https://server8.mp3quran.net/frs_a/">فارس عباد</option>
+                    <option value="https://server12.mp3quran.net/maher/">ماهر المعيقلي</option>
+                    <option value="https://server11.mp3quran.net/sds/">عبد الرحمن السديس</option>
+                    <option value="https://server8.mp3quran.net/lhdan/">محمد اللحيدان</option>
+                    <option value="https://server11.mp3quran.net/yasser/">ياسر الدوسري</option>
+                    <option value="https://server6.mp3quran.net/qtm/">ناصر القطامي</option>
+                    <option value="https://server10.mp3quran.net/ajm/">أحمد بن علي العجمي</option>
+                    <option value="https://server7.mp3quran.net/s_gmd/">سعد الغامدي</option>
+                    <option value="https://server8.mp3quran.net/bu_khtr/">صلاح بو خاطر</option>
+                    <option value="https://server11.mp3quran.net/shatri/">أبو بكر الشاطري</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div id="global-loading" class="global-loading style-hidden">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>جاري تحميل المصحف الشريف...</p>
+        </div>
+        <div id="surah-container" class="surah-grid"></div>
+    </main>
+
+    <div id="quran-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-surah-title">اسم السورة</h2>
+                <div class="modal-header-btns">
+                    <span id="modal-mode-indicator" class="mode-indicator style-hidden">وضع التسميع نشط 💡 انقر على الآية لكشفها</span>
+                    <button id="close-modal" class="btn-close-modal-circle" title="إغلاق">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="basmala-container" class="basmala">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                <div id="ayahs-text-container" class="quran-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bookmarks-sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-bookmark"></i> آيات تحتاج تثبيت</h3>
+            <button id="close-bookmarks-sidebar" class="btn-close-modal-circle" title="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="bookmarks-container" class="sidebar-body">
+            <p class="empty-msg">لا توجد آيات مضافة حالياً.</p>
+        </div>
+    </div>
+
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <div class="floating-controls-wrapper">
+        <button id="dark-mode-toggle-btn" class="floating-mini-btn" title="تبديل الوضع الليلي">
+            <i class="fa-solid fa-sun" id="dark-mode-icon"></i>
+        </button>
+        <button id="floating-info-btn" class="floating-mini-btn" title="عن أثير">
+            <i class="fa-solid fa-power-off"></i>
+        </button>
+    </div>
+
+    <div id="info-popup-modal" class="modal-info">
+        <div class="modal-info-content">
+            <div class="modal-info-header">
+                <h3><i class="fa-solid fa-circle-info"></i> عن منصة أثير</h3>
+                <button id="close-info-modal" class="btn-close-modal-circle" title="إغلاق">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-info-body">
+                <p class="main-desc">أثير | رفيقك الهادئ لتلاوة وحفظ القرآن. 🌿🌷<br>
+                هنا, في هذه المساحة الهادئة, أردنا أن نصنع لك ملاذاً يجمعك بكتاب الله بأسلوب يملأ قلبك بالسكينة.</p>
+                <h4>🌷 ما الذي يجعل تجربتك معنا فريدة؟</h4>
+                <ul class="features-list">
+                    <li><strong>أصواتٌ تخشع لها القلوب:</strong> اخترنا لك 15 قارئاً من أعذب الأصوات.</li>
+                    <li><strong>مصحف مريح للعين:</strong> نعرض لك النص القرآني بالرسم العثماني الأصيل.</li>
+                    <li><strong>التفسير الميسر المعتمد:</strong> بنقرة واحدة على أي آية.</li>
+                    <li><strong>رفيقك في الحفظ والتثبيت:</strong> وضع التسميع الذاتي والإشارات المرجعية.</li>
+                    <li><strong>بحث بلمح البصر:</strong> محرك بحث ذكي.</li>
+                    <li><strong>الانتقال التلقائي والتكرار:</strong> لتجربة استماع متواصلة.</li>
+                    <li><strong>التوافق اللوني والوضع الليلي:</strong> دعم كامل للعين.</li>
+                </ul>
+                <hr class="privacy-divider">
+                <div class="privacy-section">
+                    <h4><i class="fa-solid fa-shield-heart"></i> خصوصيتك تهمنا</h4>
+                    <p>نحن نحترم خصوصيتك ولا نجمع أي بيانات شخصية عنك.</p>
+                </div>
+                <p class="footer-blessing">جعل الله القرآن ربيع قلبك ونور صدرك. 🌿🌷</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="tafseer-popup" class="tafseer-tooltip style-hidden">
+        <div class="tafseer-popup-header">
+            <span><i class="fa-solid fa-book-open"></i> التفسير الميسر</span>
+            <button id="close-tafseer-btn" class="btn-close-modal-circle" title="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="tafseer-popup-content" class="tafseer-popup-body">جاري تحميل التفسير...</div>
+    </div>
+
+    <footer class="audio-player-footer">
+        <div class="container player-container">
+            <div class="now-playing">
+                <span id="current-surah-title">اختر سورة للاستماع والقراءة</span>
+                <span id="current-reciter-name">(العفاسي)</span>
+            </div>
+            <div class="player-extra-controls">
+                <button id="loop-surah-btn" class="btn-player-opt" title="تكرار السورة">
+                    <i class="fa-solid fa-rotate-left"></i> تكرار: <span id="loop-status">معطل</span>
+                </button>
+                <button id="next-surah-btn" class="btn-player-opt active" title="الانتقال التلقائي">
+                    <i class="fa-solid fa-forward-step"></i> انتقال: <span id="next-status">مفعل</span>
+                </button>
+            </div>
+            <div class="audio-player-enhanced">
+                <audio id="main-audio" controls></audio>
+            </div>
+        </div>
+        <p style="font-size: 0.75rem; text-align: center; margin-top: 15px; color: var(--text-color); opacity: 0.6; width: 100%;">
+            نحن نستخدم Google Analytics لتحسين الأداء.
+        </p>
+    </footer>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('Service Worker registered successfully:', reg.scope);
+                }).catch(err => {
+                    console.error('Service Worker registration failed:', err);
+                });
+            });
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>

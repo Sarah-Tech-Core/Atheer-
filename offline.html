@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>غير متصل | أثير</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Amiri', serif;
+            background: #fdfbf7;
+            color: #2c3e2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .offline-box {
+            max-width: 400px;
+            padding: 30px 20px;
+            background: rgba(255, 252, 248, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            border: 1px solid rgba(107, 142, 107, 0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.04);
+        }
+        .offline-icon { font-size: 4rem; color: #6b8e6b; margin-bottom: 16px; }
+        h1 { font-size: 1.8rem; color: #6b8e6b; margin: 0 0 8px; }
+        p { font-size: 1.1rem; color: #7a8a7a; line-height: 1.7; margin: 0 0 20px; }
+        .retry-btn {
+            background: #6b8e6b;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 60px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+        }
+        .retry-btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(107,142,107,0.2); }
+    </style>
+</head>
+<body>
+    <div class="offline-box">
+        <div class="offline-icon">📡</div>
+        <h1>أنت غير متصل</h1>
+        <p>يبدو أن اتصالك بالإنترنت قد انقطع. يُرجى التحقق من الشبكة ثم المحاولة مرة أخرى.</p>
+        <button class="retry-btn" onclick="location.reload()">إعادة المحاولة</button>
+    </div>
+</body>
+</html>

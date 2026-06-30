@@ -1,0 +1,5 @@
+# السماح لمحركات البحث بزحف الموقع بالكامل
+User-agent: *
+Allow: /
+
+Sitemap: https://sarah-tech-core.github.io/Atheer/sitemap.xml
