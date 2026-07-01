@@ -9,7 +9,8 @@ const staticAssets = [
   './offline.html',
   './style.css',
   './script.js',
-  './manifest.json'
+  './manifest.json',
+  './quran-uthmani.json'   // ✅ تمت الإضافة هنا
 ];
 
 self.addEventListener('install', event => {
