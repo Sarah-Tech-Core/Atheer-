@@ -175,22 +175,20 @@ function showToast(message, duration = 2500, type = 'info') {
 }
 
 // ============================================================
-//  📡  تحميل البيانات مع Proxies متعددة (مضمونة)
+//  📡  تحميل البيانات مع Proxies متعددة (مضمونة) - للاحتياط فقط
 // ============================================================
 async function fetchWithProxy(url) {
-    // قائمة Proxies موثوقة
     const proxies = [
         'https://corsproxy.io/?',
         'https://api.allorigins.win/raw?url=',
         'https://cors-anywhere.herokuapp.com/'
     ];
     
-    // المحاولة عبر الـ Proxies
     for (const proxy of proxies) {
         try {
             console.log(`🔄 محاولة التحميل عبر: ${proxy}`);
             const response = await fetch(proxy + encodeURIComponent(url), {
-                signal: AbortSignal.timeout(10000) // مهلة 10 ثواني
+                signal: AbortSignal.timeout(10000)
             });
             if (response.ok) {
                 console.log(`✅ تم التحميل بنجاح عبر: ${proxy}`);
@@ -201,7 +199,6 @@ async function fetchWithProxy(url) {
         }
     }
     
-    // المحاولة الأخيرة: اتصال مباشر (قد ينجح في بعض البيئات)
     try {
         console.log('🔄 محاولة الاتصال المباشر...');
         const response = await fetch(url, {
@@ -215,11 +212,10 @@ async function fetchWithProxy(url) {
         console.log('❌ فشل الاتصال المباشر');
     }
     
-    // إذا فشل كل شيء
     throw new Error('تعذر تحميل البيانات من جميع المصادر');
 }
 
-// ===== البيانات المضمنة (نسخة احتياطية) =====
+// ===== البيانات المضمنة (نسخة احتياطية قصوى) =====
 const EMBEDDED_SURAHS = [
   {"number":1,"name":"الفاتحة","englishName":"Al-Faatiha","revelationType":"Meccan","numberOfAyahs":7},
   {"number":2,"name":"البقرة","englishName":"Al-Baqara","revelationType":"Medinan","numberOfAyahs":286},
@@ -337,76 +333,8 @@ const EMBEDDED_SURAHS = [
   {"number":114,"name":"الناس","englishName":"An-Nas","revelationType":"Meccan","numberOfAyahs":6}
 ];
 
-// ===== تحميل البيانات الرئيسي =====
-async function loadQuranData() {
-    if (globalLoading) {
-        globalLoading.classList.remove('style-hidden');
-        globalLoading.style.display = 'block';
-        globalLoading.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المصحف الشريف...`;
-    }
-
-    try {
-        // 1. التحقق من IndexedDB
-        let surahsFromDB = await loadFromDB('surahs');
-        let quranFromDB = await loadFromDB('quranText');
-        let tafseerFromDB = await loadFromDB('tafseer');
-
-        if (surahsFromDB && surahsFromDB.length > 0 && quranFromDB && quranFromDB.length > 0) {
-            allSurahs = surahsFromDB;
-            fullQuranText = quranFromDB;
-            fullTafseerText = tafseerFromDB || [];
-            
-            if (globalLoading) globalLoading.style.display = 'none';
-            if (surahContainer) surahContainer.classList.remove('style-hidden');
-            displaySurahs(allSurahs);
-            
-            showToast('✅ تم التحميل من الذاكرة المحلية', 1500, 'success');
-            setTimeout(updateDataInBackground, 5000);
-            return true;
-        }
-
-        // 2. محاولة التحميل من API
-        showToast('⏳ جلب البيانات من الخادم...', 2000, 'info');
-        const success = await fetchFromAPIAndSave();
-        if (success) return true;
-
-        // 3. إذا فشل API، استخدام البيانات المضمنة
-        console.log('⚠️ استخدام البيانات المضمنة كنسخة احتياطية');
-        allSurahs = EMBEDDED_SURAHS;
-        fullQuranText = generateFallbackQuran();
-        fullTafseerText = [];
-
-        await saveToDB('surahs', allSurahs);
-        await saveToDB('quranText', fullQuranText);
-        await saveToDB('tafseer', fullTafseerText);
-
-        if (globalLoading) globalLoading.style.display = 'none';
-        if (surahContainer) surahContainer.classList.remove('style-hidden');
-        displaySurahs(allSurahs);
-        
-        showToast('✅ تم التحميل بنجاح (نسخة احتياطية)', 2000, 'success');
-        return true;
-
-    } catch (error) {
-        console.error('خطأ في تحميل البيانات:', error);
-        
-        // الحل الأخير: استخدام البيانات المضمنة
-        allSurahs = EMBEDDED_SURAHS;
-        fullQuranText = generateFallbackQuran();
-        fullTafseerText = [];
-
-        if (globalLoading) globalLoading.style.display = 'none';
-        if (surahContainer) surahContainer.classList.remove('style-hidden');
-        displaySurahs(allSurahs);
-        
-        showToast('✅ تم التحميل بنسخة احتياطية', 3000, 'info');
-        return true;
-    }
-}
-
-// ===== دالة لتوليد نسخة احتياطية من القرآن =====
+// ===== دالة لتوليد نسخة احتياطية من القرآن (فاتحة فقط) =====
 function generateFallbackQuran() {
-    // سورة الفاتحة كاملة
     return [
         {
             "number": 1,
@@ -424,7 +352,7 @@ function generateFallbackQuran() {
     ];
 }
 
-// ===== التحميل من API =====
+// ===== التحميل من API (احتياطي) =====
 async function fetchFromAPIAndSave() {
     try {
         const [surahsResponse, quranTextResponse, tafseerResponse] = await Promise.all([
@@ -458,7 +386,7 @@ async function fetchFromAPIAndSave() {
     }
 }
 
-// ===== تحديث البيانات في الخلفية =====
+// ===== تحديث البيانات في الخلفية (من الملف المحلي) =====
 async function updateDataInBackground() {
     try {
         const lastUpdate = localStorage.getItem('quranLastUpdate');
@@ -467,34 +395,127 @@ async function updateDataInBackground() {
             return;
         }
 
-        const [surahsResponse, quranTextResponse, tafseerResponse] = await Promise.all([
-            fetchWithProxy('https://api.alquran.cloud/v1/surah'),
-            fetchWithProxy('https://api.alquran.cloud/v1/quran/quran-uthmani'),
-            fetchWithProxy('https://api.alquran.cloud/v1/quran/ar.muyassar')
-        ]);
-
-        if (surahsResponse && quranTextResponse && tafseerResponse) {
-            const surahsData = await surahsResponse.json();
-            const quranTextData = await quranTextResponse.json();
-            const tafseerData = await tafseerResponse.json();
-
-            allSurahs = surahsData.data;
-            fullQuranText = quranTextData.data.surahs;
-            fullTafseerText = tafseerData.data.surahs;
+        // التحديث من الملف المحلي الأساسي
+        const response = await fetch('./quran-uthmani.json');
+        if (!response.ok) return;
+        const localData = await response.json();
+        if (localData.code === 200 && localData.data && localData.data.surahs) {
+            const surahs = localData.data.surahs;
+            allSurahs = surahs.map(s => ({
+                number: s.number,
+                name: s.name.replace(/^سُورَةُ\s+|['"]/g, '').trim(),
+                englishName: s.englishName,
+                revelationType: s.revelationType,
+                numberOfAyahs: s.ayahs.length
+            }));
+            fullQuranText = surahs;
 
             await saveToDB('surahs', allSurahs);
             await saveToDB('quranText', fullQuranText);
-            await saveToDB('tafseer', fullTafseerText);
-
             localStorage.setItem('quranLastUpdate', String(now));
             
             if (surahContainer && surahContainer.children.length === 0) {
                 displaySurahs(allSurahs);
             }
-            showToast('🔄 تم تحديث البيانات', 1500, 'info');
+            showToast('🔄 تم تحديث البيانات من الملف المحلي', 1500, 'info');
         }
     } catch (e) {
         console.log('تحديث الخلفي فشل');
+    }
+}
+
+// ============================================================
+//  📥  تحميل البيانات الرئيسي (الأولوية: DB ← الملف المحلي ← API ← الاحتياطي)
+// ============================================================
+async function loadQuranData() {
+    if (globalLoading) {
+        globalLoading.classList.remove('style-hidden');
+        globalLoading.style.display = 'block';
+        globalLoading.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل المصحف الشريف...`;
+    }
+
+    try {
+        // 1. التحقق من IndexedDB أولاً (سرعة فائقة)
+        let surahsFromDB = await loadFromDB('surahs');
+        let quranFromDB = await loadFromDB('quranText');
+        let tafseerFromDB = await loadFromDB('tafseer');
+
+        if (surahsFromDB && surahsFromDB.length > 0 && quranFromDB && quranFromDB.length > 0) {
+            allSurahs = surahsFromDB;
+            fullQuranText = quranFromDB;
+            fullTafseerText = tafseerFromDB || [];
+            
+            if (globalLoading) globalLoading.style.display = 'none';
+            if (surahContainer) surahContainer.classList.remove('style-hidden');
+            displaySurahs(allSurahs);
+            
+            showToast('✅ تم التحميل من الذاكرة المحلية', 1500, 'success');
+            setTimeout(updateDataInBackground, 5000);
+            return true;
+        }
+
+        // 2. تحميل الملف المحلي quran-uthmani.json (المصدر الأساسي)
+        showToast('⏳ جلب البيانات من الملف المحلي...', 2000, 'info');
+        const localFileResponse = await fetch('./quran-uthmani.json');
+        if (!localFileResponse.ok) throw new Error('تعذر تحميل الملف المحلي');
+
+        const localData = await localFileResponse.json();
+        if (localData.code === 200 && localData.data && localData.data.surahs) {
+            const surahs = localData.data.surahs;
+            // تحويل البيانات إلى الهيكل الذي يتوقعه التطبيق
+            allSurahs = surahs.map(s => ({
+                number: s.number,
+                name: s.name.replace(/^سُورَةُ\s+|['"]/g, '').trim(), // إزالة "سُورَةُ"
+                englishName: s.englishName,
+                revelationType: s.revelationType,
+                numberOfAyahs: s.ayahs.length
+            }));
+            fullQuranText = surahs; // يحتوي على الآيات كاملة
+
+            // التفسير غير موجود في هذا الملف، نتركه فارغاً (سيُحمل لاحقاً أو يبقى فارغاً)
+            fullTafseerText = [];
+
+            // حفظ في IndexedDB
+            await saveToDB('surahs', allSurahs);
+            await saveToDB('quranText', fullQuranText);
+            await saveToDB('tafseer', fullTafseerText);
+
+            if (globalLoading) globalLoading.style.display = 'none';
+            if (surahContainer) surahContainer.classList.remove('style-hidden');
+            displaySurahs(allSurahs);
+            
+            showToast('✅ تم تحميل المصحف من الملف المحلي', 2000, 'success');
+            // تحديث الخلفية (اختياري)
+            setTimeout(updateDataInBackground, 5000);
+            return true;
+        } else {
+            throw new Error('الملف المحلي لا يحتوي على بنية صحيحة');
+        }
+
+    } catch (error) {
+        console.error('⚠️ فشل تحميل الملف المحلي، التبديل إلى API:', error);
+        showToast('⚠️ جاري التحميل من الخادم...', 2000, 'info');
+        
+        // 3. المحاولة عبر API (كحل احتياطي)
+        const success = await fetchFromAPIAndSave();
+        if (success) return true;
+
+        // 4. الحل الأخير: البيانات المضمنة (نسخة بسيطة جداً)
+        console.warn('⚠️ استخدام البيانات المضمنة كنسخة احتياطية قصوى');
+        allSurahs = EMBEDDED_SURAHS;
+        fullQuranText = generateFallbackQuran();
+        fullTafseerText = [];
+
+        await saveToDB('surahs', allSurahs);
+        await saveToDB('quranText', fullQuranText);
+        await saveToDB('tafseer', fullTafseerText);
+
+        if (globalLoading) globalLoading.style.display = 'none';
+        if (surahContainer) surahContainer.classList.remove('style-hidden');
+        displaySurahs(allSurahs);
+        
+        showToast('✅ تم التحميل بنسخة احتياطية', 3000, 'info');
+        return true;
     }
 }
 
